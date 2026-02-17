@@ -1,16 +1,18 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
 *.pyd
-*.so
 
-# Virtual env
+# Virtual environment
 .venv/
-
-# Testing / coverage
-.pytest_cache/
-.coverage
-htmlcov/
 
 # VS Code
 .vscode/
+
+# pytest cache
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
