@@ -1,7 +1,11 @@
+[project]
+name = "test_project"
+version = "0.1.0"
+requires-python = ">=3.12"
 
-[tool.ruff]
-src = ["src"]
-line-length = 88
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
 
-[tool.ruff.lint]
-select = ["E", "F"]
+[tool.setuptools.packages.find]
+where = ["src"]
