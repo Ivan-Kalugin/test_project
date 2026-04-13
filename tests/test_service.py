@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from test_project.service import complete_task, create_task, get_tasks
+from test_project.service import complete_task, create_task, delete_task, get_tasks
 
 
 @pytest.fixture
@@ -44,3 +44,13 @@ def test_complete_task_marks_done(temp_db: Path) -> None:
 def test_complete_task_invalid_id_raises(temp_db: Path) -> None:
     with pytest.raises(ValueError):
         complete_task(0, db_path=temp_db)
+
+
+def test_delete_task_removes_task(temp_db: Path) -> None:
+    task = create_task("to delete", db_path=temp_db)
+
+    deleted = delete_task(task.id, db_path=temp_db)
+    tasks = get_tasks(db_path=temp_db)
+
+    assert deleted is True
+    assert tasks == []

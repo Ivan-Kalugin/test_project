@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import argparse
 
-from test_project.service import complete_task, create_task, get_tasks
+from test_project.service import complete_task, create_task, delete_task, get_tasks
 from test_project.storage import Task
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="test_project",
+        prog="tasks",
         description="Simple task manager",
     )
 
@@ -22,6 +22,9 @@ def build_parser() -> argparse.ArgumentParser:
     done_parser = subparsers.add_parser("done", help="Mark task as done")
     done_parser.add_argument("id", type=int, help="Task ID")
 
+    delete_parser = subparsers.add_parser("delete", help="Delete task")
+    delete_parser.add_argument("id", type=int, help="Task ID")
+
     return parser
 
 
@@ -31,7 +34,7 @@ def run(argv: list[str] | None = None) -> int:
 
     if args.cmd == "add":
         task = create_task(args.title)
-        print(f"✅ Added: [{task.id}] {task.title}")
+        print(f"Added task #{task.id}: {task.title}")
         return 0
 
     if args.cmd == "list":
@@ -42,8 +45,8 @@ def run(argv: list[str] | None = None) -> int:
             return 0
 
         for task in tasks:
-            flag = "✅" if task.done else "⏳"
-            print(f"{flag} [{task.id}] {task.title}")
+            status = "x" if task.done else " "
+            print(f"[{status}] {task.id}: {task.title}")
 
         return 0
 
@@ -54,7 +57,17 @@ def run(argv: list[str] | None = None) -> int:
             print("Task not found.")
             return 1
 
-        print(f"✅ Done: [{done_task.id}] {done_task.title}")
+        print(f"Task #{done_task.id} marked as done.")
+        return 0
+
+    if args.cmd == "delete":
+        deleted = delete_task(args.id)
+
+        if not deleted:
+            print("Task not found.")
+            return 1
+
+        print(f"Task #{args.id} deleted.")
         return 0
 
     return 2
