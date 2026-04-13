@@ -1,13 +1,25 @@
 [project]
 name = "test_project"
 version = "0.1.0"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ["py313"]
+
+[tool.ruff]
+line-length = 88
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
 
 [tool.mypy]
 python_version = "3.14"
@@ -17,3 +29,8 @@ warn_return_any = true
 warn_unused_configs = true
 pretty = true
 show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = ["tests", "tests.*", "tests.tests", "tests.tests.*"]
+disallow_untyped_defs = false
+disallow_untyped_decorators = false

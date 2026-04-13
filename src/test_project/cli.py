@@ -2,23 +2,25 @@ from __future__ import annotations
 
 import argparse
 
-from test_project.storage import add_task, load_tasks, mark_done
+from test_project.service import complete_task, create_task, get_tasks
+from test_project.storage import Task
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="test_project",
-        description="Мини CLI: задачи",
+        description="Simple task manager",
     )
+
     subparsers = parser.add_subparsers(dest="cmd", required=True)
 
-    p_add = subparsers.add_parser("add", help="Добавить задачу")
-    p_add.add_argument("title", help="Текст задачи")
+    add_parser = subparsers.add_parser("add", help="Add a new task")
+    add_parser.add_argument("title", help="Task title")
 
-    subparsers.add_parser("list", help="Показать задачи")
+    subparsers.add_parser("list", help="Show all tasks")
 
-    p_done = subparsers.add_parser("done", help="Отметить задачу выполненной")
-    p_done.add_argument("id", type=int, help="ID задачи")
+    done_parser = subparsers.add_parser("done", help="Mark task as done")
+    done_parser.add_argument("id", type=int, help="Task ID")
 
     return parser
 
@@ -28,29 +30,31 @@ def run(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.cmd == "add":
-        task = add_task(args.title)
-        print(f"✅ Добавлено: [{task.id}] {task.title}")
+        task = create_task(args.title)
+        print(f"✅ Added: [{task.id}] {task.title}")
         return 0
 
     if args.cmd == "list":
-        tasks = load_tasks()
+        tasks = get_tasks()
+
         if not tasks:
-            print("Пока пусто.")
+            print("No tasks yet.")
             return 0
 
-        for t in tasks:
-            flag = "✅" if t.done else "⏳"
-            print(f"{flag} [{t.id}] {t.title}")
+        for task in tasks:
+            flag = "✅" if task.done else "⏳"
+            print(f"{flag} [{task.id}] {task.title}")
 
         return 0
 
     if args.cmd == "done":
-        done_task = mark_done(args.id)
+        done_task: Task | None = complete_task(args.id)
+
         if done_task is None:
-            print("Не найдено.")
+            print("Task not found.")
             return 1
 
-        print(f"✅ Готово: [{done_task.id}] {done_task.title}")
+        print(f"✅ Done: [{done_task.id}] {done_task.title}")
         return 0
 
     return 2

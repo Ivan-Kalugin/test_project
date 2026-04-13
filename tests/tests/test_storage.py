@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
-
 
 DEFAULT_DB_PATH = Path("tasks.json")
 
